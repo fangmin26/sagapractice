@@ -1,17 +1,25 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import App from "./App";
+
+import { Provider } from "react-redux";
+import { combineReducers, createStore, applyMiddleware } from "redux";
+import createSagaMiddleware from "redux-saga";
+import reducers from "./reducers";
+import sagas from "./sagas";
+
+const sagaMiddleWare = createSagaMiddleware();
+const rootReducer = combineReducers({ reducers });
+//applyMiddleware함수로 redux-saga적용
+const store = createStore(rootReducer, applyMiddleware(sagaMiddleWare));
+//saga 미들웨어 실행
+sagaMiddleWare.run(sagas);
 
 ReactDOM.render(
-  <React.StrictMode>
+  <Provider store={store}>
     <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+  </Provider>,
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+  document.getElementById("root")
+);
